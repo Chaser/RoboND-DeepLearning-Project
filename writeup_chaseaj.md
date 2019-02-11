@@ -8,7 +8,14 @@
 [image1]: ./images/following.png
 [image2]: ./images/object_detection_types.jpeg
 [image3]: ./images/fcn_structure.png
-
+[image4]: ./images/covnets.png
+[image5]: ./images/convolutions.png
+[image6]: ./images/fcn_encoder.png
+[image7]: ./images/cnn_structure.png
+[image8]: ./images/1x1_convolution_layer.png
+[image9]: ./images/fcn_decoder.png
+[image10]: ./images/bilinear.png
+[image11]: ./images/fcn_skip_connections.png
 
 **Aim:**  The aim of the `Follow Me` project is to identify and track a target. Identification and tracking is achieved by training a deep neural network. The target is a person called a "hero" which will be mixed in with other people (image below)
 
@@ -33,24 +40,70 @@ For this particular project, the question taht is asked is "Where is an object",
 A model that is able to achieve `semantic segmentation` is `Fully Convolution Networks` (FCNs). FCNs are an extension of Convolution Neural Networks (CNN), where instead of having a fully connected layer they create an encoder/decoder topology. This inherits the benfits of CNNs but also preserves spatial information allow allowing us to be able to detect **if** our hero is in the scene and if so **where**.
 
 ## Fully Covolution Networks (FCNs)
+As indicated above `Fully Convolution Networks` or FCNs leverage Convolution Neural Networks (CNN), where instead of having a fully connected layer a 1x1 convolution layer and a decoder are part of the model (image below).
 
 ![alt text][image3]
 
+FCNs take advantage of three special techniques
+1) Replace fully connected with 1x1 convolution layer
+2) Upsampling through the use of transposed convolution layers
+3) Skip Connections
+
+These techniques will be discussed in detail in the following sections.
+
 ### Encoder
+A fully connected neural network has the abiliy to learn features as well as classify data, however its not practicical to apply to images. The reason being that a high number of neurons required. Convolution Neural Networks is able to reduce the parameters by leveraging weight sharing. Weight sharing is an important optimisation as often in perception problems the location of object is not important, this is known as statistical invariance.
+
+For instance in the image below, if the question is "Is there a kitten" then this problem is considered classification, so we don't care where in the image the kiten exists. Analysis of where is costly in that it requires more weights or parameters and ultimately costs in training and detection time.
+
+![alt text][image4]
+
+CNNs are able to reduce paramters by applying a filter and scanning over the input layer (image below). 
+
+![alt text][image5]
+
+Its common to have more than one filter as different filters pick up up different qualities of a patch. The amount of filters per convolution layer is called a filter depth `k`. The filter depth translates to the amount of neurons each patch (kernel) is connects to.
+
+As with deep neural network topology this process is repeated multiple times  which ends up forming a pyramid (image below). This provides a structure that reduces the spacial dimenions and the weights required while improving understanding by increasing the filter depth.
+
+![alt text][image6]
 
 ### 1x1 Convolution Layer
+A CNN final layer is a fully connected layer (image below). 
+
+![alt text][image7]
+
+However the problem with a fully connected layer is that data is flattened losing the spatrial data within the input. While useful for classification requirements it's not useful for detection and segmentation.
+
+This is overcome by replacing the fully connected layer by using a 1x1 convolution layer with a kernel and stride of 1. By using a 1x1 convolution layer, the network is able to retain spatial information from the encoder along with the benfit that it works on any input size.
+
+![alt text][image8]
 
 ### Decoder
+The decoder connects to the 1x1 convolution layer where the decoder can compose of bilinear upsampling layers or transposed convolution layers.
+
+![alt text][image9]
+
+Bilinear upsampling is a resampling technique that utilizes the weighted average of four nearest known pixels, located diagonally to a given pixel, to estimate a new pixel intensity value. The weighted average is usually distance dependent.
+
+![alt text][image10]
+
+Transposed Convolutions reverse regular convolution layers by upsampling the previous layer to a desired resolution or dimension. The process involves multiplying each pixel of your input with a kernel or filter.
+
+Bilinear upsampling process is less computation intense however pays the price in terms of lose of details compared to transposed convoultions. In this project we will use bilinear upsampling.
 
 ### Skip Connections
+When performing convulations, spatial information is lost to save or weights and calculation time. With FCNs a method called skip connections can be utilized which allows for information to be retained. This is achieved by "wiring" the output of encoder layers to combine with decoder layers (image below).
+
+![alt text][image11]
 
 ## FCN Model
+
 
 # Hyperparameters
 
 
 # Training
-
 
 # Performance
 
