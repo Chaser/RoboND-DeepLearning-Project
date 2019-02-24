@@ -16,6 +16,7 @@
 [image9]: ./images/fcn_decoder.png
 [image10]: ./images/bilinear.png
 [image11]: ./images/fcn_skip_connections.png
+[image12]: ./images/fcn-model.jpg
 
 **Aim:**  The aim of the `Follow Me` project is to identify and track a target. Identification and tracking is achieved by training a deep neural network. The target is a person called a "hero" which will be mixed in with other people (image below)
 
@@ -98,7 +99,29 @@ When performing convulations, spatial information is lost to save or weights and
 ![alt text][image11]
 
 ## FCN Model
+Based on the components above a model was constructured consisting of two encoders, 1x1 convolutional layer and two decoders. From the decoder the last process is a `softmax` to ensure normalizations of the probability distribution.
 
+To ensure that spatial information is retained skip connections were also used between `encoder0` and `decoder0` and the `inputs` and `decoder1`. The architecture and code are below.
+
+![alt text][image12]
+
+```python
+def fcn_model(inputs, num_classes):
+    
+    # Add Encoder Blocks. 
+    # Remember that with each encoder layer, the depth of your model (the number of filters) increases.
+    f = 32
+    encoder0 = (encoder_block(inputs, f, 2))               # 32
+    encoder1 = (encoder_block(encoder0, f*2, 2))           # 64
+    # Add 1x1 Convolution layer using conv2d_batchnorm().  
+    oneconv = conv2d_batchnorm(encoder1, f*2*2, 1, 1)      # 128
+    # Add the same number of Decoder Blocks as the number of Encoder Blocks
+    decoder0 = decoder_block(oneconv, encoder0, f*2)       # 64
+    decoder1 = (decoder_block(decoder0, inputs, f))        # 32
+    
+    # The function returns the output layer of your model. "x" is the final layer obtained from the last decoder_block()
+    return layers.Conv2D(num_classes, 3, activation='softmax', padding='same')(decoder1)
+```
 
 # Hyperparameters
 
