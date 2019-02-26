@@ -362,6 +362,13 @@ final_IoU = 0.567035387228
 final_score = 0.419958684432
 ```
 
+# Adaptability for Following Other Objects
+It was asked if "the model and data would work well for following another object (dog, cat, car, etc.) instead of a human and if not, what changes would be required"
+
+To answer the first component of the question is no, the **model** and **data** at present would not work for **following** another object. Semantic Segmentation leverages the proximity of certain pixels and in this case the model was trained to label three features 1: Hero, 2: Non-Hero and 3: other items (background). To be able to follow another object new data would have to be aquired and the model be taught these labels. 
+
+Once taught the question of the quality of the model can be considered for instance would the model be able to determine the difference between a dog and a car? I would say yes, however the question of a can it determine if an object is a dog or a cat? I would say no. The network is not very deep and I believe would cause issues.
+
 # Future Improvements.
 The IoU result of 41.9% while sufficient for the project can be signficantly improved. First improvement would be to increase the training data set. The second improvement could a decrease in the learning rate while increasing the number of epochs. This would provide a higher degree of loss accuracy however would increase the training time significantly.
 
